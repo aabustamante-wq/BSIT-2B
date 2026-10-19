@@ -13,7 +13,7 @@ export class DatabaseService implements OnModuleInit {
       database: process.env.DB_NAME,
       port: Number(process.env.DB_PORT),
       ssl: {
-        rejectUnauthorized: false, // Required for managed cloud MySQL databases
+        rejectUnauthorized: false,
       },
       waitForConnections: true,
       connectionLimit: 10,
@@ -22,7 +22,11 @@ export class DatabaseService implements OnModuleInit {
   }
 
   async onModuleInit() {
-    // Test the connection on startup
     await this.pool.query('SELECT 1');
+  }
+
+  // Add this public method
+  public getPool(): mysql.Pool {
+    return this.pool;
   }
 }
