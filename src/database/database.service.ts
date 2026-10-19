@@ -3,26 +3,26 @@ import * as mysql from 'mysql2/promise';
 
 @Injectable()
 export class DatabaseService implements OnModuleInit {
-  private pool: any;
+  private pool: mysql.Pool;
 
-  async onModuleInit() {
+  constructor() {
     this.pool = mysql.createPool({
-      host: 'mysql-1f32b95e-gbox-a575.l.aivencloud.com',
-      port: 10580,
-      user: 'avnadmin',
-      password: 'process.env.DB_PASSWORD',
-      database: 'defaultdb',
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      port: Number(process.env.DB_PORT),
+      ssl: {
+        rejectUnauthorized: false, // Required for managed cloud MySQL databases
+      },
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
     });
-
-    await this.pool.query('SELECT 1');
-
-    console.log('MySQL pool created');
   }
 
-  getPool() {
-    return this.pool;
+  async onModuleInit() {
+    // Test the connection on startup
+    await this.pool.query('SELECT 1');
   }
 }
